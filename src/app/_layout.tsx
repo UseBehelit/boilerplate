@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { ThemeSync } from '@/components/theme-sync';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTranslation } from '@/hooks/use-translation';
 import { queryClient } from '@/lib/query-client';
 import { useAuthStore } from '@/stores/auth-store';
 import { useOnboardingStore } from '@/stores/onboarding-store';
@@ -14,6 +15,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const hasCompletedOnboarding = useOnboardingStore((state) => state.hasCompletedOnboarding);
 
@@ -36,7 +38,10 @@ export default function RootLayout() {
               <Stack.Screen name="(tabs)" />
             </Stack.Protected>
 
-            <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: true, title: 'Upgrade' }} />
+            <Stack.Screen
+              name="paywall"
+              options={{ presentation: 'modal', headerShown: true, title: t('paywall.title') }}
+            />
           </Stack>
         </ThemeProvider>
       </QueryClientProvider>

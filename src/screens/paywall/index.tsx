@@ -4,20 +4,22 @@ import RevenueCatUI from 'react-native-purchases-ui';
 
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
+import { useTranslation } from '@/hooks/use-translation';
 import { isPurchasesConfigured } from '@/lib/purchases';
 import { Text } from '@/tw';
 
 export function Paywall() {
   const router = useRouter();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   if (!isPurchasesConfigured()) {
     return (
       <Screen className="items-center justify-center gap-4 px-6">
         <Text className="text-center text-base text-neutral-500 dark:text-neutral-400">
-          Set EXPO_PUBLIC_REVENUECAT_IOS_KEY / EXPO_PUBLIC_REVENUECAT_ANDROID_KEY to enable the paywall.
+          {t('paywall.notConfigured')}
         </Text>
-        <Button label="Close" variant="secondary" onPress={() => router.back()} />
+        <Button label={t('common.close')} variant="secondary" onPress={() => router.back()} />
       </Screen>
     );
   }

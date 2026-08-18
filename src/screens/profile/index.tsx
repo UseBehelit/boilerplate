@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { useEntitlement } from '@/hooks/use-entitlement';
+import { useTranslation } from '@/hooks/use-translation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Text, View } from '@/tw';
 
 export function Profile() {
   const router = useRouter();
+  const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const { isPro } = useEntitlement();
 
@@ -28,10 +30,10 @@ export function Profile() {
 
       <Card className="gap-3">
         <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-neutral-900 dark:text-white">Plan</Text>
-          <Badge label={isPro ? 'Pro' : 'Free'} variant={isPro ? 'accent' : 'neutral'} />
+          <Text className="text-base font-semibold text-neutral-900 dark:text-white">{t('profile.plan')}</Text>
+          <Badge label={isPro ? t('profile.pro') : t('profile.free')} variant={isPro ? 'accent' : 'neutral'} />
         </View>
-        {!isPro && <Button label="Upgrade to Pro" onPress={() => router.push('/paywall')} />}
+        {!isPro && <Button label={t('profile.upgrade')} onPress={() => router.push('/paywall')} />}
       </Card>
     </Screen>
   );

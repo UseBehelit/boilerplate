@@ -4,6 +4,7 @@ import { Dimensions, FlatList, type NativeSyntheticEvent, type NativeScrollEvent
 
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
+import { useTranslation } from '@/hooks/use-translation';
 import { useOnboardingStore } from '@/stores/onboarding-store';
 import { Text, View } from '@/tw';
 
@@ -13,6 +14,7 @@ const { width } = Dimensions.get('window');
 
 export function Onboarding() {
   const router = useRouter();
+  const { t } = useTranslation();
   const completeOnboarding = useOnboardingStore((state) => state.completeOnboarding);
   const [index, setIndex] = useState(0);
   const listRef = useRef<FlatList>(null);
@@ -47,8 +49,10 @@ export function Onboarding() {
         renderItem={({ item }) => (
           <View style={{ width }} className="flex-1 items-center justify-center gap-4 px-8">
             <Text className="text-6xl">{item.emoji}</Text>
-            <Text className="text-center text-2xl font-bold text-neutral-900 dark:text-white">{item.title}</Text>
-            <Text className="text-center text-base text-neutral-500 dark:text-neutral-400">{item.description}</Text>
+            <Text className="text-center text-2xl font-bold text-neutral-900 dark:text-white">{t(item.titleKey)}</Text>
+            <Text className="text-center text-base text-neutral-500 dark:text-neutral-400">
+              {t(item.descriptionKey)}
+            </Text>
           </View>
         )}
       />
@@ -62,10 +66,10 @@ export function Onboarding() {
             />
           ))}
         </View>
-        <Button label={isLastSlide ? 'Get started' : 'Next'} onPress={handleNext} />
+        <Button label={isLastSlide ? t('onboarding.getStarted') : t('onboarding.next')} onPress={handleNext} />
         {!isLastSlide && (
           <Button
-            label="Skip"
+            label={t('onboarding.skip')}
             variant="ghost"
             onPress={() => {
               completeOnboarding();

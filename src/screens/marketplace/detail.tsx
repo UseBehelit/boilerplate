@@ -4,10 +4,12 @@ import { ActivityIndicator } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Screen } from '@/components/ui/screen';
+import { useTranslation } from '@/hooks/use-translation';
 import { fetchMarketplaceItem } from '@/lib/demo-data';
 import { Text, View } from '@/tw';
 
 export function MarketplaceDetail({ id }: { id: string }) {
+  const { t } = useTranslation();
   const { data: item, isLoading } = useQuery({
     queryKey: ['marketplace-item', id],
     queryFn: () => fetchMarketplaceItem(id),
@@ -24,7 +26,11 @@ export function MarketplaceDetail({ id }: { id: string }) {
   if (!item) {
     return (
       <Screen>
-        <EmptyState emoji="🔍" title="Item not found" description="This item may have been removed." />
+        <EmptyState
+          emoji="🔍"
+          title={t('marketplace.notFoundTitle')}
+          description={t('marketplace.notFoundDescription')}
+        />
       </Screen>
     );
   }
@@ -38,7 +44,7 @@ export function MarketplaceDetail({ id }: { id: string }) {
         <Text className="text-base text-neutral-500 dark:text-neutral-400">{item.description}</Text>
       </View>
       <View className="pb-4">
-        <Button label="Add to cart" onPress={() => {}} />
+        <Button label={t('marketplace.addToCart')} onPress={() => {}} />
       </View>
     </Screen>
   );

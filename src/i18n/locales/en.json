@@ -1,0 +1,89 @@
+{
+  "common": {
+    "brandName": "Expo Starter",
+    "docs": "Docs",
+    "close": "Close",
+    "system": "System"
+  },
+  "tabs": {
+    "home": "Home",
+    "marketplace": "Marketplace",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "onboarding": {
+    "next": "Next",
+    "getStarted": "Get started",
+    "skip": "Skip",
+    "slides": {
+      "welcome": {
+        "title": "Welcome",
+        "description": "This is a boilerplate screen — swap the copy and art for your own product."
+      },
+      "discover": {
+        "title": "Discover",
+        "description": "Browse the marketplace tab to see a list/detail pattern you can reuse."
+      },
+      "ready": {
+        "title": "You’re set",
+        "description": "Sign in or create an account to get started."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don’t have an account?",
+      "createOne": "Create one"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "It only takes a minute",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    }
+  },
+  "home": {
+    "greeting": "Hi, {{name}} 👋",
+    "subtitle": "Here’s what’s happening today.",
+    "viewDetails": "View details",
+    "sheetTitle": "Dashboard details",
+    "sheetDescription": "This bottom sheet is a starting point for anything that needs more room than a modal — filters, details, or quick actions — built with @gorhom/bottom-sheet."
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "addToCart": "Add to cart",
+    "notFoundTitle": "Item not found",
+    "notFoundDescription": "This item may have been removed."
+  },
+  "profile": {
+    "plan": "Plan",
+    "upgrade": "Upgrade to Pro",
+    "pro": "Pro",
+    "free": "Free"
+  },
+  "settings": {
+    "appearance": "Appearance",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "notifications": "Notifications",
+    "pushNotifications": "Push notifications",
+    "about": "About",
+    "language": "Language",
+    "languageEnglish": "English",
+    "version": "Version",
+    "signOut": "Sign out"
+  },
+  "paywall": {
+    "title": "Upgrade",
+    "notConfigured": "Set EXPO_PUBLIC_REVENUECAT_IOS_KEY / EXPO_PUBLIC_REVENUECAT_ANDROID_KEY to enable the paywall."
+  }
+}

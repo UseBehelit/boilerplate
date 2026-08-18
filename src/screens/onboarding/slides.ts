@@ -1,27 +1,29 @@
+import type { TranslationKey } from '@/i18n/resources';
+
 export interface OnboardingSlide {
   key: string;
-  title: string;
-  description: string;
+  titleKey: TranslationKey;
+  descriptionKey: TranslationKey;
   emoji: string;
 }
 
 export const onboardingSlides: OnboardingSlide[] = [
   {
     key: 'welcome',
-    title: 'Welcome',
-    description: 'This is a boilerplate screen — swap the copy and art for your own product.',
+    titleKey: 'onboarding.slides.welcome.title',
+    descriptionKey: 'onboarding.slides.welcome.description',
     emoji: '👋',
   },
   {
     key: 'discover',
-    title: 'Discover',
-    description: 'Browse the marketplace tab to see a list/detail pattern you can reuse.',
+    titleKey: 'onboarding.slides.discover.title',
+    descriptionKey: 'onboarding.slides.discover.description',
     emoji: '🧭',
   },
   {
     key: 'ready',
-    title: 'You’re set',
-    description: 'Sign in or create an account to get started.',
+    titleKey: 'onboarding.slides.ready.title',
+    descriptionKey: 'onboarding.slides.ready.description',
     emoji: '🚀',
   },
 ];

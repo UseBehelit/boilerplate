@@ -41,13 +41,27 @@ Both stores read their initial state synchronously from MMKV (see below) at modu
 - **Home** (`screens/home`) — React Query demo (`lib/demo-data.ts`) rendering stat cards, plus a `@gorhom/bottom-sheet` detail view.
 - **Marketplace** (`app/(tabs)/marketplace/`) — its own nested `Stack`: `index.tsx` (list) → `[id].tsx` (detail), backed by the same demo data.
 - **Profile** (`screens/profile`) — shows the RevenueCat entitlement (`hooks/use-entitlement.ts`) and links to `/paywall`.
-- **Settings** (`screens/settings`) — notification permission (`expo-notifications`), locale (`expo-localization`), app version (`expo-constants`), sign-out.
+- **Settings** (`screens/settings`) — appearance and language pickers (see below), notification permission (`expo-notifications`), app version (`expo-constants`), sign-out.
 
 `/paywall` (`src/app/paywall.tsx`, presented as a modal) renders RevenueCat's `RevenueCatUI.Paywall`, with a fallback screen when `EXPO_PUBLIC_REVENUECAT_IOS_KEY` / `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` aren't set (`lib/purchases.ts`).
 
 ### Auth and storage — replace before shipping
 
 `stores/auth-store.ts` and the login/register screens are **stubbed** — `fakeAuthRequest` in the store simulates a network call with no real backend. Swap it for a real API client; the store's shape (`user`, `isAuthenticated`, `login`/`register`/`logout`, MMKV persistence) is meant to be reusable, the request itself is not. `lib/mmkv.ts` wraps `react-native-mmkv` v4's `createMMKV()` factory API (not the old `new MMKV()` class, and `remove()` not `delete()` — the API changed between major versions).
+
+### Theme (light/dark)
+
+`stores/theme-store.ts` holds a `system | light | dark` preference, MMKV-persisted like the onboarding/auth stores. It's folded into the template's own `src/hooks/use-color-scheme.ts` (+ `.web.ts`) abstraction rather than living beside it — that hook always resolves to a plain `'light' | 'dark'` now (no more `=== 'unspecified'` guards at each call site), and everything that already read it (`_layout.tsx`'s `ThemeProvider`, `app-tabs.tsx`'s `NativeTabs` colors, `use-theme.ts` → `themed-text`/`themed-view`) picks up the override for free.
+
+That hook doesn't reach Tailwind's `dark:` classes, though — `react-native-css` tracks OS Appearance on its own via a module-level listener, independent of app state, and will silently win a race against a forced preference if the OS theme changes mid-session. `components/theme-sync.tsx` (mounted once in the root layout) pushes the resolved scheme into `react-native-css`'s `colorScheme.set()` (wrapped in `lib/color-scheme.ts`) and re-registers its own `Appearance` listener whenever a preference is forced, specifically to win that race by re-asserting after `react-native-css`'s listener fires. Don't call `colorScheme.set()` from anywhere else — there is exactly one place that owns this sync.
+
+### Internationalization (i18n)
+
+`src/i18n/` is a small dependency-free translation layer — no i18next. `resources.ts` registers locale JSON files from `i18n/locales/` (currently just `en.json`) and derives a `TranslationKey` union type from `en.json`'s shape via a recursive dotted-path type, so `t('some.wrong.key')` is a compile error. `translate.ts` does the actual lookup + `{{param}}` interpolation, falling back to `en` (then the raw key) if a locale is missing a string.
+
+`stores/locale-store.ts` holds a `system | <locale>` preference (MMKV-persisted, same pattern as theme). `hooks/use-locale.ts` resolves it against the device's locales (`expo-localization`'s `useLocales()`, which is SSR-safe — unlike MMKV's web shim, it never throws server-side) to a concrete `Locale`. `hooks/use-translation.ts` wraps that into `const { t } = useTranslation()` for use in components.
+
+**Only `en` is translated, by design.** Every user-facing string in the app already goes through `t()` — Settings even has a working language picker — but it only offers "System" and "English" until a second `locales/<code>.json` file is added. To add one: copy `en.json`'s shape, translate the values, register it in `resources.ts`'s `resources` object, and add a row to `languageOptions` in `screens/settings/index.tsx`. Demo/mock content (`lib/demo-data.ts`'s marketplace items, `auth-store.ts`'s stubbed error messages) is deliberately **not** run through `t()` — it stands in for backend-sourced content, which in a real app would carry its own localization strategy, not the client-side static-string one.
 
 ### Styling
 
@@ -60,11 +74,11 @@ The template's original components (`themed-text.tsx`, `themed-view.tsx`, `exter
 ### Everything else
 
 - `src/components/` — shared UI. Platform-specific files follow the `.ios`/`.android`/`.web` suffix convention — Metro picks the match per platform, and every platform-specific component needs a default (extensionless) file.
-- `src/components/ui/` — Tailwind-based primitives (`Screen`, `Button`, `TextField`) used by the newer screens.
+- `src/components/ui/` — Tailwind-based primitives (`Screen`, `Button`, `TextField`, `Card`, `Avatar`, `Badge`, `ListRow`, `ListSection`, `EmptyState`) used by the newer screens. Promote a new one here once a pattern repeats across screens — see the `expo-design-system` skill for the extraction criteria.
 - `src/constants/theme.ts` — design tokens: `Colors` (light/dark), `Spacing`, layout constants like `MaxContentWidth`/`BottomTabInset`.
-- `src/hooks/` — `use-color-scheme.ts` (native) and `.web.ts` variant (guards against SSR/hydration mismatch by delaying the real scheme until after mount — this is intentional, not a bug, even though the lint rule `react-hooks/set-state-in-effect` currently flags it as a false positive).
-- `src/lib/` — non-React helpers: `mmkv.ts`, `query-client.ts` (React Query), `purchases.ts` (RevenueCat), `demo-data.ts` (fake fetchers — delete once real data sources exist).
-- `src/stores/` — Zustand stores (`auth-store.ts`, `onboarding-store.ts`).
+- `src/hooks/` — `use-color-scheme.ts` (native) and `.web.ts` variant (guards against SSR/hydration mismatch by delaying the real scheme until after mount — this is intentional, not a bug, even though the lint rule `react-hooks/set-state-in-effect` currently flags it as a false positive) — see Theme above; `use-locale.ts` / `use-translation.ts` — see i18n above; `use-entitlement.ts` — RevenueCat entitlement via React Query.
+- `src/lib/` — non-React helpers: `mmkv.ts`, `color-scheme.ts` (theme ↔ react-native-css sync), `query-client.ts` (React Query), `purchases.ts` (RevenueCat), `demo-data.ts` (fake fetchers — delete once real data sources exist).
+- `src/stores/` — Zustand stores (`auth-store.ts`, `onboarding-store.ts`, `theme-store.ts`, `locale-store.ts`).
 - `scripts/reset-project.js` — see `reset-project` command above.
 
 Follow the `expo-project-structure` conventions as the codebase grows further: `screens/<name>/` for a screen's private sub-components, `server/` + `src/app/api/*+api.ts` if API routes are added, tests colocated next to source.

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
 import { TextField } from '@/components/ui/text-field';
+import { useTranslation } from '@/hooks/use-translation';
 import { useAuthStore } from '@/stores/auth-store';
 import { Link, Text, View } from '@/tw';
 
 export function Login() {
   const router = useRouter();
+  const { t } = useTranslation();
   const login = useAuthStore((state) => state.login);
   const isSubmitting = useAuthStore((state) => state.isSubmitting);
   const error = useAuthStore((state) => state.error);
@@ -28,13 +30,13 @@ export function Login() {
     <Screen className="px-6">
       <View className="flex-1 justify-center gap-6">
         <View className="gap-1">
-          <Text className="text-3xl font-bold text-neutral-900 dark:text-white">Welcome back</Text>
-          <Text className="text-base text-neutral-500 dark:text-neutral-400">Sign in to continue</Text>
+          <Text className="text-3xl font-bold text-neutral-900 dark:text-white">{t('auth.login.title')}</Text>
+          <Text className="text-base text-neutral-500 dark:text-neutral-400">{t('auth.login.subtitle')}</Text>
         </View>
 
         <View className="gap-4">
           <TextField
-            label="Email"
+            label={t('auth.login.emailLabel')}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -42,7 +44,7 @@ export function Login() {
             autoComplete="email"
           />
           <TextField
-            label="Password"
+            label={t('auth.login.passwordLabel')}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -51,12 +53,17 @@ export function Login() {
           {error ? <Text className="text-sm text-red-500">{error}</Text> : null}
         </View>
 
-        <Button label="Sign in" onPress={handleSubmit} loading={isSubmitting} disabled={!email || !password} />
+        <Button
+          label={t('auth.login.submit')}
+          onPress={handleSubmit}
+          loading={isSubmitting}
+          disabled={!email || !password}
+        />
 
         <View className="flex-row justify-center gap-1">
-          <Text className="text-neutral-500 dark:text-neutral-400">Don’t have an account?</Text>
+          <Text className="text-neutral-500 dark:text-neutral-400">{t('auth.login.noAccount')}</Text>
           <Link href="/(auth)/register">
-            <Text className="font-semibold text-blue-600">Create one</Text>
+            <Text className="font-semibold text-blue-600">{t('auth.login.createOne')}</Text>
           </Link>
         </View>
       </View>
