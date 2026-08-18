@@ -2,35 +2,14 @@ import Constants from 'expo-constants';
 import * as Localization from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { type ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Switch } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { ListRow } from '@/components/ui/list-row';
+import { ListSection } from '@/components/ui/list-section';
 import { Screen } from '@/components/ui/screen';
 import { useAuthStore } from '@/stores/auth-store';
-import { Pressable, Text, View } from '@/tw';
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <View className="gap-2">
-      <Text className="text-xs font-semibold uppercase text-neutral-400 dark:text-neutral-500">{title}</Text>
-      <View className="gap-px overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-900">{children}</View>
-    </View>
-  );
-}
-
-function Row({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={!onPress}
-      className="flex-row items-center justify-between bg-white px-4 py-3 active:opacity-60 dark:bg-black">
-      <Text className="text-base text-neutral-900 dark:text-white">{label}</Text>
-      <Text className={`text-base ${onPress ? 'font-semibold text-blue-600' : 'text-neutral-500 dark:text-neutral-400'}`}>
-        {value}
-      </Text>
-    </Pressable>
-  );
-}
 
 export function Settings() {
   const router = useRouter();
@@ -43,7 +22,12 @@ export function Settings() {
     });
   }, []);
 
-  async function handleEnableNotifications() {
+  async function handleToggleNotifications(next: boolean) {
+    if (!next) {
+      // OS permissions can't be revoked from the app — this just reflects local intent.
+      setNotificationsEnabled(false);
+      return;
+    }
     const { status } = await Notifications.requestPermissionsAsync();
     setNotificationsEnabled(status === 'granted');
   }
@@ -58,18 +42,17 @@ export function Settings() {
 
   return (
     <Screen className="gap-6 px-6 pt-4">
-      <Section title="Notifications">
-        <Row
+      <ListSection title="Notifications">
+        <ListRow
           label="Push notifications"
-          value={notificationsEnabled ? 'On' : 'Turn on'}
-          onPress={notificationsEnabled ? undefined : handleEnableNotifications}
+          right={<Switch value={notificationsEnabled} onValueChange={handleToggleNotifications} />}
         />
-      </Section>
+      </ListSection>
 
-      <Section title="About">
-        <Row label="Language" value={locale} />
-        <Row label="Version" value={version} />
-      </Section>
+      <ListSection title="About">
+        <ListRow label="Language" value={locale} />
+        <ListRow label="Version" value={version} />
+      </ListSection>
 
       <Button label="Sign out" variant="secondary" onPress={handleSignOut} />
     </Screen>

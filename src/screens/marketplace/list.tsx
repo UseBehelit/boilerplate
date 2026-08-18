@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { FlatList } from 'react-native';
 
+import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { fetchMarketplaceItems, type MarketplaceItem } from '@/lib/demo-data';
-import { Pressable, Text, View } from '@/tw';
+import { Text, View } from '@/tw';
 
 export function MarketplaceList() {
   const router = useRouter();
@@ -27,9 +28,7 @@ export function MarketplaceList() {
 
 function MarketplaceCard({ item, onPress }: { item: MarketplaceItem; onPress: () => void }) {
   return (
-    <Pressable
-      onPress={onPress}
-      className="flex-row items-center gap-4 rounded-2xl bg-neutral-100 p-4 active:opacity-70 dark:bg-neutral-900">
+    <Card onPress={onPress} className="flex-row items-center gap-4">
       <Text className="text-3xl">{item.emoji}</Text>
       <View className="flex-1 gap-0.5">
         <Text className="text-base font-semibold text-neutral-900 dark:text-white">{item.title}</Text>
@@ -38,6 +37,6 @@ function MarketplaceCard({ item, onPress }: { item: MarketplaceItem; onPress: ()
         </Text>
       </View>
       <Text className="text-base font-bold text-blue-600">{item.price}</Text>
-    </Pressable>
+    </Card>
   );
 }

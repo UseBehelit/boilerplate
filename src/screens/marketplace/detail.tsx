@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ActivityIndicator } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Screen } from '@/components/ui/screen';
 import { fetchMarketplaceItem } from '@/lib/demo-data';
 import { Text, View } from '@/tw';
@@ -22,8 +23,8 @@ export function MarketplaceDetail({ id }: { id: string }) {
 
   if (!item) {
     return (
-      <Screen className="items-center justify-center px-6">
-        <Text className="text-base text-neutral-500 dark:text-neutral-400">Item not found.</Text>
+      <Screen>
+        <EmptyState emoji="🔍" title="Item not found" description="This item may have been removed." />
       </Screen>
     );
   }

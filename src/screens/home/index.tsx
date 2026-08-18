@@ -3,6 +3,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { fetchDashboardStats } from '@/lib/demo-data';
 import { useAuthStore } from '@/stores/auth-store';
@@ -25,17 +26,12 @@ export function Home() {
 
       <View className="mt-6 flex-row flex-wrap gap-3">
         {isLoading
-          ? Array.from({ length: 3 }).map((_, i) => (
-              <View
-                key={i}
-                className="h-24 flex-1 basis-1/3 rounded-2xl bg-neutral-100 dark:bg-neutral-900"
-              />
-            ))
+          ? Array.from({ length: 3 }).map((_, i) => <Card key={i} className="h-24 flex-1 basis-1/3" />)
           : stats.map((stat) => (
-              <View key={stat.key} className="h-24 flex-1 basis-1/3 justify-between rounded-2xl bg-neutral-100 p-4 dark:bg-neutral-900">
+              <Card key={stat.key} className="h-24 flex-1 basis-1/3 justify-between">
                 <Text className="text-xs font-medium text-neutral-500 dark:text-neutral-400">{stat.label}</Text>
                 <Text className="text-xl font-bold text-neutral-900 dark:text-white">{stat.value}</Text>
-              </View>
+              </Card>
             ))}
       </View>
 

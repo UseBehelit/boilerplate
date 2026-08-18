@@ -1,19 +1,13 @@
 import { useRouter } from 'expo-router';
 
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Screen } from '@/components/ui/screen';
 import { useEntitlement } from '@/hooks/use-entitlement';
 import { useAuthStore } from '@/stores/auth-store';
 import { Text, View } from '@/tw';
-
-function initials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-}
 
 export function Profile() {
   const router = useRouter();
@@ -25,22 +19,20 @@ export function Profile() {
   return (
     <Screen className="px-6">
       <View className="items-center gap-3 pb-8 pt-10">
-        <View className="h-20 w-20 items-center justify-center rounded-full bg-blue-600">
-          <Text className="text-2xl font-bold text-white">{initials(user.name)}</Text>
-        </View>
+        <Avatar name={user.name} size="lg" />
         <View className="items-center gap-0.5">
           <Text className="text-xl font-bold text-neutral-900 dark:text-white">{user.name}</Text>
           <Text className="text-base text-neutral-500 dark:text-neutral-400">{user.email}</Text>
         </View>
       </View>
 
-      <View className="gap-3 rounded-2xl bg-neutral-100 p-4 dark:bg-neutral-900">
+      <Card className="gap-3">
         <View className="flex-row items-center justify-between">
           <Text className="text-base font-semibold text-neutral-900 dark:text-white">Plan</Text>
-          <Text className="text-base text-neutral-500 dark:text-neutral-400">{isPro ? 'Pro' : 'Free'}</Text>
+          <Badge label={isPro ? 'Pro' : 'Free'} variant={isPro ? 'accent' : 'neutral'} />
         </View>
         {!isPro && <Button label="Upgrade to Pro" onPress={() => router.push('/paywall')} />}
-      </View>
+      </Card>
     </Screen>
   );
 }
