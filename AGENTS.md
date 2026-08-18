@@ -4,7 +4,7 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 
 ## What this repo is
 
-This is `com.behelit.boilerplate` — a reusable Expo starting point, not a single product. It gets cloned per app and then customized. Keep additions generic (patterns worth reusing across many future apps) rather than app-specific. The bundle identifier / package name (`com.behelit.boilerplate` in `app.json`) and the name/slug (`boilerplate`) are the first things a clone should change.
+This is `com.behelit.boilerplate` — a reusable Expo starting point, not a single product. It gets cloned per app and then customized. Keep additions generic (patterns worth reusing across many future apps) rather than app-specific. The bundle identifier / package name (`com.behelit.boilerplate` in `app.json`) and the name/slug (`boilerplate`) are the first things a clone should change — `npm run configure` does this (see Commands).
 
 The app ships with a demo onboarding → auth → tabbed-app → paywall flow (see Architecture below) meant as reference patterns to gut and replace, not a real product.
 
@@ -14,6 +14,7 @@ The app ships with a demo onboarding → auth → tabbed-app → paywall flow (s
 - `npm run ios` / `npm run android` / `npm run web` — start the dev server targeting a specific platform directly.
 - `npm run lint` (`expo lint`) — ESLint via `eslint-config-expo` (flat config in `eslint.config.js`).
 - `npx tsc --noEmit` — typecheck. Run `npx expo start` at least once first (or after adding/removing a route file, or a `.css`/asset import) so `expo-env.d.ts`, `nativewind-env.d.ts`, and Router's typed-route types exist and are current.
+- `npm run configure` — interactive wizard (`scripts/configure-app.js`) to rebrand a fresh clone: display name, slug (url scheme + `package.json` name), iOS bundle identifier / Android package name, and the app icon. Also available as single-purpose, scriptable commands — `npm run set:name -- "My App"`, `set:app-id -- com.you.app` (both platforms at once), `set:bundle-id` / `set:package-name -- com.you.app` (separately, for the rare case they diverge), `set:icon -- ./path/to/icon.png` (note the `--`, so npm forwards the value). Setting a new icon drops `expo.ios.icon` (Apple's Icon Composer bundle at `assets/expo.icon/`, which can't be regenerated from a flat image) and falls back to the flat PNG on all platforms — see the script's own output for what to do if you want that bundle back. None of this touches `/ios` or `/android` — run `npx expo prebuild --clean` (or just don't prebuild yet) for native projects to pick the changes up.
 - `npm run reset-project` — one-way scaffold reset: moves `src/` and `scripts/` into `example/` (or deletes them) and regenerates a blank `src/app/index.tsx` + `_layout.tsx`. This throws away the onboarding/auth/tabs/paywall flow entirely — only run it if you want a truly blank slate instead of gutting the existing flow.
 - No test runner is configured yet (`package.json` has no `test` script). If you add tests, wire them up via `npx expo install -- --dev jest jest-expo` per Expo's unit-testing guide and colocate `*.test.ts(x)` next to the file under test.
 - No `eas.json` yet — add one (`eas build:configure`) before using EAS Build/Submit/Update.

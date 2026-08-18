@@ -81,7 +81,13 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "configure": "node ./scripts/configure-app.js",
+    "set:name": "node ./scripts/configure-app.js --name",
+    "set:app-id": "node ./scripts/configure-app.js --app-id",
+    "set:bundle-id": "node ./scripts/configure-app.js --bundle-id",
+    "set:package-name": "node ./scripts/configure-app.js --package-name",
+    "set:icon": "node ./scripts/configure-app.js --icon"
   },
   "private": true
 }
